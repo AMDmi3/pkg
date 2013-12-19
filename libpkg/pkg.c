@@ -490,8 +490,8 @@ pkg_addlicense(struct pkg *pkg, const char *name)
 
 	HASH_FIND_STR(pkg->licenses, name, l);
 	if (l != NULL) {
-		pkg_emit_error("duplicate license listing: %s, ignoring", name);
-		return (EPKG_OK);
+		pkg_emit_error("duplicate license listing: %s, fatal", name);
+		return (EPKG_FATAL);
 	}
 
 	pkg_license_new(&l);
@@ -513,8 +513,8 @@ pkg_adduid(struct pkg *pkg, const char *name, const char *uidstr)
 
 	HASH_FIND_STR(pkg->users, name, u);
 	if (u != NULL) {
-		pkg_emit_error("duplicate user listing: %s, ignoring", name);
-		return (EPKG_OK);
+		pkg_emit_error("duplicate user listing: %s, fatal", name);
+		return (EPKG_FATAL);
 	}
 
 	pkg_user_new(&u);
@@ -547,8 +547,8 @@ pkg_addgid(struct pkg *pkg, const char *name, const char *gidstr)
 
 	HASH_FIND_STR(pkg->groups, name, g);
 	if (g != NULL) {
-		pkg_emit_error("duplicate group listing: %s, ignoring", name);
-		return (EPKG_OK);
+		pkg_emit_error("duplicate group listing: %s, fatal", name);
+		return (EPKG_FATAL);
 	}
 
 	pkg_group_new(&g);
@@ -585,9 +585,9 @@ pkg_adddep(struct pkg *pkg, const char *name, const char *origin, const char *ve
 	HASH_FIND_STR(pkg->deps, origin, d);
 	if (d != NULL) {
 		pkg_get(pkg, PKG_NAME, &n1, PKG_VERSION, &v1);
-		pkg_emit_error("%s-%s: duplicate dependency listing: %s-%s, ignoring",
+		pkg_emit_error("%s-%s: duplicate dependency listing: %s-%s, fatal",
 		    n1, v1, name, version);
-		return (EPKG_OK);
+		return (EPKG_FATAL);
 	}
 
 	pkg_dep_new(&d);
@@ -646,8 +646,8 @@ pkg_addfile_attr(struct pkg *pkg, const char *path, const char *sha256, const ch
 	if (check_duplicates) {
 		HASH_FIND_STR(pkg->files, path, f);
 		if (f != NULL) {
-			pkg_emit_error("duplicate file listing: %s, ignoring", pkg_file_path(f));
-			return (EPKG_OK);
+			pkg_emit_error("duplicate file listing: %s, fatal", pkg_file_path(f));
+			return (EPKG_FATAL);
 		}
 	}
 
@@ -681,8 +681,8 @@ pkg_addcategory(struct pkg *pkg, const char *name)
 
 	HASH_FIND_STR(pkg->categories, name, c);
 	if (c != NULL) {
-		pkg_emit_error("duplicate category listing: %s, ignoring", name);
-		return (EPKG_OK);
+		pkg_emit_error("duplicate category listing: %s, fatal", name);
+		return (EPKG_FATAL);
 	}
 
 	pkg_category_new(&c);
@@ -713,8 +713,8 @@ pkg_adddir_attr(struct pkg *pkg, const char *path, const char *uname, const char
 	if (check_duplicates) {
 		HASH_FIND_STR(pkg->dirs, path, d);
 		if (d != NULL) {
-			pkg_emit_error("duplicate directory listing: %s, ignoring", path);
-			return (EPKG_OK);
+			pkg_emit_error("duplicate directory listing: %s, fatal", path);
+			return (EPKG_FATAL);
 		}
 	}
 
@@ -848,8 +848,8 @@ pkg_addoption(struct pkg *pkg, const char *key, const char *value)
 		pkg_option_new(&o);
 		sbuf_set(&o->key, key);
 	} else if ( o->value != NULL) {
-		pkg_emit_error("duplicate options listing: %s, ignoring", key);
-		return (EPKG_OK);
+		pkg_emit_error("duplicate options listing: %s, fatal", key);
+		return (EPKG_FATAL);
 	}
 
 	sbuf_set(&o->value, value);
@@ -881,8 +881,8 @@ pkg_addoption_default(struct pkg *pkg, const char *key,
 		pkg_option_new(&o);
 		sbuf_set(&o->key, key);
 	} else if ( o->default_value != NULL) {
-		pkg_emit_error("duplicate default value for option: %s, ignoring", key);
-		return (EPKG_OK);
+		pkg_emit_error("duplicate default value for option: %s, fatal", key);
+		return (EPKG_FATAL);
 	}
 
 	sbuf_set(&o->default_value, default_value);
@@ -913,8 +913,8 @@ pkg_addoption_description(struct pkg *pkg, const char *key,
 		pkg_option_new(&o);
 		sbuf_set(&o->key, key);
 	} else if ( o->description != NULL) {
-		pkg_emit_error("duplicate description for option: %s, ignoring", key);
-		return (EPKG_OK);
+		pkg_emit_error("duplicate description for option: %s, fatal", key);
+		return (EPKG_FATAL);
 	}
 
 	sbuf_set(&o->description, description);
@@ -987,8 +987,8 @@ pkg_addannotation(struct pkg *pkg, const char *tag, const char *value)
 	HASH_FIND_STR(pkg->annotations, tag, an);
 	if (an != NULL) {
 		pkg_emit_error("duplicate annotation tag: %s value: %s,"
-			       " ignoring", tag, value);
-		return (EPKG_OK);
+			       " fatal", tag, value);
+		return (EPKG_FATAL);
 	}
 	an = NULL;
 	pkg_annotation_new(&an);
